@@ -1,0 +1,7 @@
+name: InfectionMinigame
+version: '1.0-SNAPSHOT'
+main: me.solar.infectionMinigame.InfectionMinigame
+api-version: '1.21'
+prefix: Apollo-Api-Core
+load: STARTUP
+authors: [ Solar ]
