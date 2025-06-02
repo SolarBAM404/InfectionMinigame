@@ -1,6 +1,6 @@
 name: InfectionMinigame
 version: '1.0-SNAPSHOT'
-main: me.solar.infectionMinigame.InfectionMinigame
+main: me.solar.infectionMinigame.InfectionMinigamePlugin
 api-version: '1.21'
 prefix: Apollo-Api-Core
 load: STARTUP
