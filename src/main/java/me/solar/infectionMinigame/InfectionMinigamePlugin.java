@@ -1,9 +1,16 @@
 package me.solar.infectionMinigame;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import me.solar.apollo.apolloCore.ApolloPlugin;
 
-public class InfectionMinigamePlugin extends JavaPlugin {
+public class InfectionMinigamePlugin extends ApolloPlugin {
 
+    @Override
+    public void start() {
 
+    }
 
+    @Override
+    public void shutdown() {
+
+    }
 }

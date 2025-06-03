@@ -1,3 +1,8 @@
+import org.gradle.kotlin.dsl.implementation
+
+val GITHUB_TOKEN: kotlin.String = System.getenv("GITHUB_TOKEN") ?: "TOKEN"
+val GITHUB_USER: kotlin.String = System.getenv("GITHUB_USERNAME") ?: "USERNAME"
+
 plugins {
     kotlin("jvm") version "2.2.0-RC"
     id("com.gradleup.shadow") version "8.3.0"
@@ -9,17 +14,26 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/") {
         name = "papermc-repo"
     }
     maven("https://oss.sonatype.org/content/groups/public/") {
         name = "sonatype"
     }
+    maven {
+        url = uri("https://maven.pkg.github.com/SolarBAM404/ApolloLibrary")
+        credentials {
+            username = GITHUB_USER
+            password = GITHUB_TOKEN
+        }
+    }
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("me.solar.apollo:apollo-lib-core:1.0-SNAPSHOT")
 }
 
 tasks {
