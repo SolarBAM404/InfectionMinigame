@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "2.2.0-RC"
     id("com.gradleup.shadow") version "8.3.0"
     id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
 }
 
 group = "me.solar"
@@ -35,6 +36,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("me.solar.apollo:apollo-lib-core:1.0-SNAPSHOT")
     compileOnly("io.github.toxicity188:BetterModel:1.6.1")
+    paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
 
     // Lombok
     implementation("org.projectlombok:lombok:1.18.38")
