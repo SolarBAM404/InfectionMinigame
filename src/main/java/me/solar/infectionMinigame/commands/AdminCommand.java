@@ -10,6 +10,7 @@ import me.solar.apollo.apolloCore.utils.CommonKt;
 import me.solar.infectionMinigame.InfectionMinigamePlugin;
 import me.solar.infectionMinigame.mobs.CustomMob;
 import me.solar.infectionMinigame.mobs.MobList;
+import net.minecraft.world.level.Level;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -27,11 +28,11 @@ public class AdminCommand {
 
     public static LiteralArgumentBuilder<CommandSourceStack> testMobSpawningCmd() {
         LiteralArgumentBuilder<CommandSourceStack> node = ApolloCommands.createCommand("testmob");
-        node.executes(context -> {
-             CustomMob mob = new CustomMob("Zombie", EntityType.ZOMBIE);
-             mob.spawn(context.getSource().getLocation());
-            return 1; // Return success
-        });
+//        node.executes(context -> {
+//             CustomMob mob = new CustomMob((Level) context.getSource().getLocation().getWorld());
+//             mob.spawn(context.getSource().getLocation());
+//            return 1; // Return success
+//        });
         return node;
     }
 
