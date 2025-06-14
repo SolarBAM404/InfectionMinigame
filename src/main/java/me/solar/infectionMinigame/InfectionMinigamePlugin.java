@@ -20,6 +20,7 @@ public class InfectionMinigamePlugin extends ApolloPlugin {
 
     @Override
     public void start() {
+        instance = this;
         AdminCommand.init();
         betterModel = BetterModel.plugin();
         modelManager = betterModel.modelManager();
