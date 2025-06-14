@@ -1,36 +1,49 @@
 package me.solar.infectionMinigame.mobs;
 
+import me.solar.infectionMinigame.InfectionMinigamePlugin;
+import me.solar.infectionMinigame.mobs.types.Speedy;
+import net.minecraft.world.level.Level;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.EntityType;
 
 import javax.swing.text.html.parser.Entity;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public enum MobList {
 
-    ZOMBIE("Zombie", EntityType.ZOMBIE, 20.0, 5.0, 0.3),
-    SLOW_ZOMBIE("Slow Zombie", EntityType.ZOMBIE, 15.0, 3.0, 0.2),
-    FAST_ZOMBIE("Fast Zombie", EntityType.ZOMBIE, 25.0, 7.0, 0.5),
-    SKELETON("Skeleton", EntityType.SKELETON, 20.0, 5.0, 0.3),
-    DEMON_KNIGHT("Demon Knight", EntityType.ZOMBIE, 40.0, 10.0, 0.4)
+    DEMON_KNIGHT("Demon Knight", Speedy.class, 40.0f, 10.0f, 0.4f)
     ;
 
 
     private String name;
-    private EntityType type;
-    private String modelName;
+    private float health;
+    private double damage;
+    private float speed;
+    private Class<? extends CustomMob> mobClazz;
 
-    private CustomMob customMob;
+//    private static List<CustomMob> customMob;
 
-    MobList(String name, EntityType type, double health, double damage, double speed) {
+    MobList(String name, Class<? extends CustomMob> mobClazz, float health, double damage, float speed) {
         this.name = name;
-        this.type = type;
-        this.customMob = new CustomMob(name, type);
-        this.customMob.setHealth(health);
-        this.customMob.setDamage(damage);
-        this.customMob.setSpeed(speed);
+        this.mobClazz = mobClazz;
+        this.health = health;
+        this.damage = damage;
+        this.speed = speed;
     }
 
     public void spawn(Location loc) {
-        customMob.spawn(loc);
+        Level level = ((CraftWorld) loc.getWorld()).getHandle();
+
+        try {
+            Constructor<? extends CustomMob> constructor = mobClazz.getConstructor(Level.class);
+            constructor.setAccessible(true);
+            CustomMob customMob = constructor.newInstance(level);
+            customMob.spawn(loc);
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
