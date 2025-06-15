@@ -6,6 +6,7 @@ import kr.toxicity.model.api.manager.ModelManager;
 import lombok.Getter;
 import me.solar.apollo.apolloCore.ApolloPlugin;
 import me.solar.infectionMinigame.commands.AdminCommand;
+import me.solar.infectionMinigame.listeners.CustomMobEventsListener;
 
 public class InfectionMinigamePlugin extends ApolloPlugin {
 
@@ -24,6 +25,8 @@ public class InfectionMinigamePlugin extends ApolloPlugin {
         AdminCommand.init();
         betterModel = BetterModel.plugin();
         modelManager = betterModel.modelManager();
+
+        getServer().getPluginManager().registerEvents(new CustomMobEventsListener(), this);
     }
 
     @Override
