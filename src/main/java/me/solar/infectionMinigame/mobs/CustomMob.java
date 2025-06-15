@@ -1,6 +1,8 @@
 package me.solar.infectionMinigame.mobs;
 
 import lombok.Getter;
+import me.solar.infectionMinigame.InfectionMinigamePlugin;
+import me.solar.infectionMinigame.events.CustomMobSpawnEvent;
 import me.solar.infectionMinigame.mobs.goals.GetNearestPlayerTarget;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -10,6 +12,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftWorld;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +35,10 @@ public abstract class CustomMob extends Zombie {
         this.setCustomName(getName());
 
         mobs.put(String.valueOf(getName()), this);
-        ((org.bukkit.craftbukkit.CraftWorld) location.getWorld()).getHandle().addFreshEntity(this, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM);
+        CraftWorld craftWorld = (CraftWorld) location.getWorld();
+        craftWorld.getHandle().addFreshEntity(this, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM);
+
+        new CustomMobSpawnEvent(this).callEvent();
     }
 
     @Override
