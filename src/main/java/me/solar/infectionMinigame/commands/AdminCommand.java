@@ -1,5 +1,6 @@
 package me.solar.infectionMinigame.commands;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
@@ -13,9 +14,12 @@ import kr.toxicity.model.api.tracker.EntityTracker;
 import me.solar.apollo.apolloCore.commands.ApolloCommands;
 import me.solar.apollo.apolloCore.utils.CommonKt;
 import me.solar.infectionMinigame.InfectionMinigamePlugin;
+import me.solar.infectionMinigame.barricades.Barricade;
 import me.solar.infectionMinigame.mobs.CustomMob;
 import me.solar.infectionMinigame.mobs.MobList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -29,6 +33,7 @@ public class AdminCommand {
         node.then(testMobSpawningCmd());
         node.then(testModelMobSpawningCmd());
         node.then(testCustomMobModelSpawningCmd());
+        node.then(testBarrierCmd());
         LiteralCommandNode<CommandSourceStack> commandNode = node.build();
         ApolloCommands.registerCommand(commandNode);
     }
@@ -85,6 +90,17 @@ public class AdminCommand {
                     CommonKt.tell((Player) context.getSource(), "§cAvailable mobs: " + String.join(", ", MobList.getMobNames()));
                     return 0; // Return failure
                 });
+    }
+
+    public static LiteralArgumentBuilder<CommandSourceStack> testBarrierCmd() {
+        LiteralArgumentBuilder<CommandSourceStack> node = ApolloCommands.createCommand("testbarrier");
+        node.executes(context -> {
+            Player player = (Player) context.getSource().getExecutor();
+            Barricade barricade = new Barricade(10, 10);
+            barricade.spawn(player.getLocation().add(0, 1, 0));
+            return 1; // Return success
+        });
+        return node;
     }
 
 }
