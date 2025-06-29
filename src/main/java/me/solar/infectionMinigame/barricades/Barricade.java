@@ -36,13 +36,17 @@ public class Barricade {
         this.location = location;
 
         ItemStack item = new ItemStack(Material.COPPER_BULB);
-        ItemStackUtils.setItemModel(item, "infected:barricade");
+        ItemStackUtils.setItemModel(item, "infected:barricade_level5");
+
+        location.setPitch(0);
+        location.setYaw(0);
 
         ItemDisplay itemDisplay = location.getWorld().spawn(location, ItemDisplay.class, display -> {
             display.setCustomNameVisible(false);
             display.setGravity(false);
             display.setItemStack(item);
         });
+
 
     }
 }
