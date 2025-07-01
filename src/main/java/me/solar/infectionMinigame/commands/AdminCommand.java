@@ -96,8 +96,8 @@ public class AdminCommand {
         LiteralArgumentBuilder<CommandSourceStack> node = ApolloCommands.createCommand("testbarrier");
         node.executes(context -> {
             Player player = (Player) context.getSource().getExecutor();
-            Barricade barricade = new Barricade(10, 10);
-            barricade.spawn(player.getLocation().add(0, 1, 0));
+            Barricade barricade = new Barricade(5, 10);
+            barricade.spawn(player.getLocation().getBlock().getLocation().add(.5, .5, .5));
             return 1; // Return success
         });
         return node;

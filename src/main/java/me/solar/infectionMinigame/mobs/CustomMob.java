@@ -3,6 +3,7 @@ package me.solar.infectionMinigame.mobs;
 import lombok.Getter;
 import me.solar.infectionMinigame.InfectionMinigamePlugin;
 import me.solar.infectionMinigame.events.CustomMobSpawnEvent;
+import me.solar.infectionMinigame.mobs.goals.GetNearestBarricadeTarget;
 import me.solar.infectionMinigame.mobs.goals.GetNearestPlayerTarget;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
@@ -43,8 +44,8 @@ public abstract class CustomMob extends Zombie {
 
     @Override
     public void registerGoals() {
-        super.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 128.0F));
-        super.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+        super.goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 128.0F));
+        super.goalSelector.addGoal(3, new GetNearestBarricadeTarget(this));
         this.addBehaviourGoals();
         super.registerGoals();
     }
@@ -52,7 +53,7 @@ public abstract class CustomMob extends Zombie {
     @Override
     public void addBehaviourGoals() {
         super.goalSelector.addGoal(2, new ZombieAttackGoal(this, (double)1.0F, true));
-        super.targetSelector.addGoal(2, new GetNearestPlayerTarget(this));
+        super.targetSelector.addGoal(1, new GetNearestPlayerTarget(this));
     }
 
 }

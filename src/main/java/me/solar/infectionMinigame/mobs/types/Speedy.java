@@ -10,7 +10,7 @@ public class Speedy extends CustomMob {
     public Speedy(Level level) {
         super(level);
 
-        setSpeed(0.5f);
+        setSpeed(0.45f);
         setHealth(10f);
         AttributeInstance attri = getAttributes().getInstance(Attributes.ATTACK_DAMAGE);
         if (attri != null) {
