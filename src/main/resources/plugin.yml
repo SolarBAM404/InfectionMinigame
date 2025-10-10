@@ -5,3 +5,5 @@ api-version: '1.21'
 prefix: Apollo-Api-Core
 load: STARTUP
 authors: [ Solar ]
+depend:
+  - BetterModel
