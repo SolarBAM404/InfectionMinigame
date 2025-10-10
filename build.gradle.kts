@@ -34,7 +34,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("me.solar.apollo:apollo-lib-core:1.0-SNAPSHOT")
+    implementation("me.solarbam:ApolloLibrary:0.3.3")
     compileOnly("io.github.toxicity188:BetterModel:1.6.1")
     paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
 
