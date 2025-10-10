@@ -2,7 +2,7 @@ package me.solar.infectionMinigame.listeners;
 
 import kr.toxicity.model.api.data.renderer.ModelRenderer;
 import kr.toxicity.model.api.tracker.EntityTracker;
-import me.solar.apollo.apolloCore.utils.CommonKt;
+import me.solar.apolloLibrary.utils.Common;
 import me.solar.infectionMinigame.InfectionMinigamePlugin;
 import me.solar.infectionMinigame.events.CustomMobSpawnEvent;
 import me.solar.infectionMinigame.mobs.CustomMob;
@@ -37,7 +37,7 @@ public class CustomMobEventsListener implements Listener {
                 tracker.spawn(player);
             }
         } else {
-            CommonKt.tellConsole("<red>Model for " + modelName + " not found!");
+            Common.log("<red>Model for " + modelName + " not found!");
         }
 
     }

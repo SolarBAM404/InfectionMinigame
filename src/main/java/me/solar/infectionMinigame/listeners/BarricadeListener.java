@@ -33,13 +33,13 @@ public class BarricadeListener implements Listener {
         }
 
         if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.OAK_PLANKS) {
-            event.getPlayer().sendMessage("§cYou need Oak Planks to repair the barricade!");
+            event.getPlayer().sendMessage("<red>You need Oak Planks to repair the barricade!");
             return;
         }
 
         Barricade barricade = (Barricade) interaction.getMetadata("barricade").get(0).value();
         if (barricade.getHealth() >= 5) {
-            event.getPlayer().sendMessage("§cThe barricade is already at full health!");
+            event.getPlayer().sendMessage("<red>The barricade is already at full health!");
             return;
         }
 

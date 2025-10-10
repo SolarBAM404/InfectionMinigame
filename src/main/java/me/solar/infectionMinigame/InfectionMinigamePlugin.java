@@ -4,7 +4,8 @@ import kr.toxicity.model.api.BetterModel;
 import kr.toxicity.model.api.BetterModelPlugin;
 import kr.toxicity.model.api.manager.ModelManager;
 import lombok.Getter;
-import me.solar.apollo.apolloCore.ApolloPlugin;
+import me.solar.apolloLibrary.core.ApolloPlugin;
+import me.solar.apolloLibrary.utils.Common;
 import me.solar.infectionMinigame.commands.AdminCommand;
 import me.solar.infectionMinigame.listeners.BarricadeListener;
 import me.solar.infectionMinigame.listeners.CustomMobEventsListener;
@@ -21,14 +22,20 @@ public class InfectionMinigamePlugin extends ApolloPlugin {
     private static ModelManager modelManager;
 
     @Override
-    public void start() {
+    public void startup() {
         instance = this;
+        setInstance(this);
         AdminCommand.init();
         betterModel = BetterModel.plugin();
         modelManager = betterModel.modelManager();
 
-        getServer().getPluginManager().registerEvents(new CustomMobEventsListener(), this);
-        getServer().getPluginManager().registerEvents(new BarricadeListener(), this);
+        Common.registerListener(this, new CustomMobEventsListener());
+        Common.registerListener(this, new BarricadeListener());
+    }
+
+    @Override
+    public void onReload() {
+
     }
 
     @Override

@@ -1,20 +1,18 @@
 package me.solar.infectionMinigame.barricades;
 
 import lombok.Getter;
-import me.solar.apollo.apolloCore.utils.ItemStackUtils;
-import me.solar.apollo.apolloCore.utils.MathsUtils;
+import me.solar.apolloLibrary.utils.Common;
+import me.solar.apolloLibrary.utils.ItemStackUtils;
+import me.solar.apolloLibrary.utils.MathsUtils;
 import me.solar.infectionMinigame.InfectionMinigamePlugin;
 import me.solar.infectionMinigame.events.BarricadeDestoryedEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
@@ -50,11 +48,11 @@ public class Barricade {
 
     private void changeDisplayModel() {
         switch ((int) MathsUtils.round(health)) {
-            case 5 -> changeDisplayModel("infected:barricade_level5");
-            case 4 -> changeDisplayModel("infected:barricade_level4");
-            case 3 -> changeDisplayModel("infected:barricade_level3");
-            case 2 -> changeDisplayModel("infected:barricade_level2");
-            case 1 -> changeDisplayModel("infected:barricade_level1");
+            case 5 -> changeDisplayModel("barricade_level5");
+            case 4 -> changeDisplayModel("barricade_level4");
+            case 3 -> changeDisplayModel("barricade_level3");
+            case 2 -> changeDisplayModel("barricade_level2");
+            case 1 -> changeDisplayModel("barricade_level1");
             default -> {
                 if (itemDisplay == null) {
                     return; // No display to remove
@@ -76,8 +74,10 @@ public class Barricade {
             spawnItemDisplay(location);
         }
 
+        NamespacedKey key = Common.namespacedKey("infected", model);
+
         ItemStack item = itemDisplay.getItemStack();
-        ItemStackUtils.setItemModel(item, model);
+        ItemStackUtils.setItemModel(item, key);
         itemDisplay.setItemStack(item);
     }
 
@@ -88,8 +88,9 @@ public class Barricade {
     }
 
     private void spawnItemDisplay(Location location) {
-        ItemStack item = new ItemStack(Material.COPPER_BULB);
-        ItemStackUtils.setItemModel(item, "infected:barricade_level5");
+        ItemStack item = new ItemStack(Material.GOLD_INGOT);
+        NamespacedKey key = Common.namespacedKey("infected", "barricade_level5");
+        ItemStackUtils.setItemModel(item, key);
 
         itemDisplay = location.getWorld().spawn(location.clone().add(0, .65, 0), ItemDisplay.class, display -> {
             display.setCustomNameVisible(false);
