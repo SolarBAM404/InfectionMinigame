@@ -1,6 +1,7 @@
 package me.solar.infectionMinigame.listeners;
 
 import me.solar.infectionMinigame.barricades.Barricade;
+import me.solar.infectionMinigame.barricades.RepairableBarricade;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Interaction;
@@ -16,8 +17,10 @@ public class BarricadeListener implements Listener {
         if (event.getEntity() instanceof Interaction interaction) {
             if (interaction.hasMetadata("barricade")) {
                 Barricade barricade = (Barricade) interaction.getMetadata("barricade").get(0).value();
-                assert barricade != null;
-                barricade.damage(1);
+                if (!(barricade instanceof RepairableBarricade reBarricade)) {
+                    return;
+                }
+                reBarricade.damage(1);
                 event.setCancelled(true); // Cancel the event to prevent further damage
             }
         }
@@ -38,13 +41,16 @@ public class BarricadeListener implements Listener {
         }
 
         Barricade barricade = (Barricade) interaction.getMetadata("barricade").get(0).value();
-        if (barricade.getHealth() >= 5) {
+        if (!(barricade instanceof RepairableBarricade reBarricade)) {
+            return;
+        }
+
+        if (reBarricade.getHealth() >= 5) {
             event.getPlayer().sendMessage("<red>The barricade is already at full health!");
             return;
         }
 
-        assert barricade != null;
-        barricade.repair(1.0f);
+        reBarricade.repair(1);
         event.getPlayer().getInventory().getItemInMainHand().setAmount(event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1);
         event.setCancelled(true); // Cancel the event to prevent further interaction
     }
