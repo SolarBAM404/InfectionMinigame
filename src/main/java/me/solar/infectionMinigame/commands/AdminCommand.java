@@ -1,16 +1,19 @@
 package me.solar.infectionMinigame.commands;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import kr.toxicity.model.api.data.renderer.ModelRenderer;
 import kr.toxicity.model.api.tracker.EntityTracker;
 import me.solar.apolloLibrary.utils.Common;
+import me.solar.apolloLibrary.world.CuboidRegion;
 import me.solar.infectionMinigame.InfectionMinigamePlugin;
-import me.solar.infectionMinigame.barricades.Barricade;
+import me.solar.infectionMinigame.barricades.RepairableBarricade;
 import me.solar.infectionMinigame.mobs.MobList;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -19,22 +22,22 @@ import java.util.Arrays;
 
 public class AdminCommand {
 
-    public static void init() {
+    public static LiteralArgumentBuilder<CommandSourceStack> init() {
         LiteralArgumentBuilder<CommandSourceStack> node = LiteralArgumentBuilder.literal("admin");
-        node.then(testMobSpawningCmd());
+        node.then(reloadCmd());
         node.then(testModelMobSpawningCmd());
         node.then(testCustomMobModelSpawningCmd());
         node.then(testBarrierCmd());
-        Common.registerCommand(node.build());
+        return node;
     }
 
-    public static LiteralArgumentBuilder<CommandSourceStack> testMobSpawningCmd() {
-        LiteralArgumentBuilder<CommandSourceStack> node = LiteralArgumentBuilder.literal("testmob");
-//        node.executes(context -> {
-//             CustomMob mob = new CustomMob((Level) context.getSource().getLocation().getWorld());
-//             mob.spawn(context.getSource().getLocation());
-//            return 1; // Return success
-//        });
+    public static LiteralArgumentBuilder<CommandSourceStack> reloadCmd() {
+        LiteralArgumentBuilder<CommandSourceStack> node = LiteralArgumentBuilder.literal("reload");
+        node.executes((ctx) -> {
+            InfectionMinigamePlugin.getInstance().reloadConfig();
+            Common.tell(ctx.getSource().getExecutor(), "<green>Config reloaded!");
+            return 1;
+        });
         return node;
     }
 
@@ -86,10 +89,39 @@ public class AdminCommand {
         LiteralArgumentBuilder<CommandSourceStack> node = LiteralArgumentBuilder.literal("testbarrier");
         node.executes(context -> {
             Player player = (Player) context.getSource().getExecutor();
-            Barricade barricade = new Barricade(5, 10);
-            barricade.spawn(player.getLocation().getBlock().getLocation().add(.5, .5, .5));
+            if (player == null) {
+                Common.tell(context.getSource().getExecutor(), "<red>You must be a player to use this command!");
+                return 0;
+            }
+
+            Location location = player.getLocation().getBlock().getLocation();
+            location.setYaw(player.getLocation().getYaw());
+            CuboidRegion region = new CuboidRegion(location, location.clone().add(2, 2, 0));
+            RepairableBarricade barricade = new RepairableBarricade(region);
+            barricade.spawn();
             return 1; // Return success
         });
+        node.then(Commands.argument("x", IntegerArgumentType.integer()).then(Commands.argument("y", IntegerArgumentType.integer())
+                .executes((context -> {
+                    Player player = (Player) context.getSource().getExecutor();
+                    if (player == null) {
+                        Common.tell(context.getSource().getExecutor(), "<red>You must be a player to use this command!");
+                        return 0;
+                    }
+
+                    int x = IntegerArgumentType.getInteger(context, "x");
+                    int y = IntegerArgumentType.getInteger(context, "y");
+
+                    Location location = player.getLocation().getBlock().getLocation();
+                    location.setYaw(player.getLocation().getYaw());
+                    CuboidRegion region = new CuboidRegion(location.clone(), location.clone().add(x, y, 0));
+                    RepairableBarricade barricade = new RepairableBarricade(region);
+                    barricade.spawn();
+                    barricade.setYaw(location.getYaw());
+                    Common.tell(context.getSource().getExecutor(), "<green>Barricade spawned at your location with size (" + x + ", " + y + ")");
+                    Common.tell(context.getSource().getExecutor(), "<green>Region: " + region.getPointA().toVector() + " <green>to <yellow>" + region.getPointB().toVector());
+                    return 1;
+                }))));
         return node;
     }
 
