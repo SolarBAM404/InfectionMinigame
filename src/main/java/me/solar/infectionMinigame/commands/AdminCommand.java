@@ -10,7 +10,9 @@ import kr.toxicity.model.api.tracker.EntityTracker;
 import me.solar.apolloLibrary.utils.Common;
 import me.solar.apolloLibrary.world.CuboidRegion;
 import me.solar.infectionMinigame.InfectionMinigamePlugin;
+import me.solar.infectionMinigame.barricades.PickupItem;
 import me.solar.infectionMinigame.barricades.RepairableBarricade;
+import me.solar.infectionMinigame.barricades.items.DroppableItems;
 import me.solar.infectionMinigame.mobs.MobList;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -28,6 +30,7 @@ public class AdminCommand {
         node.then(testModelMobSpawningCmd());
         node.then(testCustomMobModelSpawningCmd());
         node.then(testBarrierCmd());
+        node.then(testItemDropCmd());
         return node;
     }
 
@@ -122,6 +125,16 @@ public class AdminCommand {
                     Common.tell(context.getSource().getExecutor(), "<green>Region: " + region.getPointA().toVector() + " <green>to <yellow>" + region.getPointB().toVector());
                     return 1;
                 }))));
+        return node;
+    }
+
+    public static LiteralArgumentBuilder<CommandSourceStack> testItemDropCmd() {
+        LiteralArgumentBuilder<CommandSourceStack> node = LiteralArgumentBuilder.literal("testitemdrop");
+        node.executes(context -> {
+            PickupItem drop = DroppableItems.SPEED_POWER_UP.createDrop(context.getSource().getLocation().add(5, 1, 5), 100);
+            drop.spawn();
+            return 1;
+        });
         return node;
     }
 
