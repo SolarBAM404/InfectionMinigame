@@ -9,6 +9,7 @@ import me.solar.apolloLibrary.utils.Common;
 import me.solar.infectionMinigame.commands.InfectionCommand;
 import me.solar.infectionMinigame.listeners.BarricadeListener;
 import me.solar.infectionMinigame.listeners.CustomMobEventsListener;
+import me.solar.infectionMinigame.listeners.PickupListener;
 
 public class InfectionMinigamePlugin extends ApolloPlugin {
 
@@ -31,6 +32,7 @@ public class InfectionMinigamePlugin extends ApolloPlugin {
 
         Common.registerListener(this, new CustomMobEventsListener());
         Common.registerListener(this, new BarricadeListener());
+        Common.registerListener(this, new PickupListener());
 
     }
 
