@@ -10,6 +10,7 @@ import kr.toxicity.model.api.tracker.EntityTracker;
 import me.solar.apolloLibrary.utils.Common;
 import me.solar.apolloLibrary.world.CuboidRegion;
 import me.solar.infectionMinigame.InfectionMinigamePlugin;
+import me.solar.infectionMinigame.barricades.LockedDoor;
 import me.solar.infectionMinigame.barricades.PickupItem;
 import me.solar.infectionMinigame.barricades.RepairableBarricade;
 import me.solar.infectionMinigame.barricades.items.DroppableItems;
@@ -31,6 +32,7 @@ public class AdminCommand {
         node.then(testCustomMobModelSpawningCmd());
         node.then(testBarrierCmd());
         node.then(testItemDropCmd());
+        node.then(testLockedDoorCmd());
         return node;
     }
 
@@ -133,6 +135,16 @@ public class AdminCommand {
         node.executes(context -> {
             PickupItem drop = DroppableItems.SPEED_POWER_UP.createDrop(context.getSource().getLocation().add(5, 1, 5), 100);
             drop.spawn();
+            return 1;
+        });
+        return node;
+    }
+
+    public static LiteralArgumentBuilder<CommandSourceStack> testLockedDoorCmd() {
+        LiteralArgumentBuilder<CommandSourceStack> node = LiteralArgumentBuilder.literal("testlockeddoor");
+        node.executes(context -> {
+            LockedDoor door = new LockedDoor(new CuboidRegion(context.getSource().getLocation(), context.getSource().getLocation().add(2, 2, 0)));
+            door.spawn();
             return 1;
         });
         return node;

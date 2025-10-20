@@ -1,8 +1,8 @@
 package me.solar.infectionMinigame.listeners;
 
 import me.solar.infectionMinigame.barricades.Barricade;
+import me.solar.infectionMinigame.barricades.LockedDoor;
 import me.solar.infectionMinigame.barricades.RepairableBarricade;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Interaction;
 import org.bukkit.event.EventHandler;
@@ -16,7 +16,7 @@ public class BarricadeListener implements Listener {
     public void onInteractionAttacker(EntityDamageEvent event) {
         if (event.getEntity() instanceof Interaction interaction) {
             if (interaction.hasMetadata("barricade")) {
-                Barricade barricade = (Barricade) interaction.getMetadata("barricade").get(0).value();
+                Barricade barricade = (Barricade) interaction.getMetadata("barricade").getFirst().value();
                 if (!(barricade instanceof RepairableBarricade reBarricade)) {
                     return;
                 }
@@ -31,28 +31,35 @@ public class BarricadeListener implements Listener {
         if (!(event.getRightClicked() instanceof Interaction interaction)) {
             return;
         }
-        if (!interaction.hasMetadata("barricade")) {
-            return;
+
+        if (interaction.hasMetadata("locked-door")) {
+            LockedDoor door = (LockedDoor) interaction.getMetadata("locked-door").getFirst().value();
+            if (door != null) {
+                door.destroy();
+            }
         }
 
-        if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.OAK_PLANKS) {
-            event.getPlayer().sendMessage("<red>You need Oak Planks to repair the barricade!");
-            return;
+        if (interaction.hasMetadata("barricade")) {
+            if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.OAK_PLANKS) {
+                event.getPlayer().sendMessage("<red>You need Oak Planks to repair the barricade!");
+                return;
+            }
+
+            Barricade barricade = (Barricade) interaction.getMetadata("barricade").getFirst().value();
+            if (!(barricade instanceof RepairableBarricade reBarricade)) {
+                return;
+            }
+
+            if (reBarricade.getHealth() >= 5) {
+                event.getPlayer().sendMessage("<red>The barricade is already at full health!");
+                return;
+            }
+
+            reBarricade.repair(1);
+            event.getPlayer().getInventory().getItemInMainHand().setAmount(event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1);
+            event.setCancelled(true); // Cancel the event to prevent further interaction
         }
 
-        Barricade barricade = (Barricade) interaction.getMetadata("barricade").get(0).value();
-        if (!(barricade instanceof RepairableBarricade reBarricade)) {
-            return;
-        }
-
-        if (reBarricade.getHealth() >= 5) {
-            event.getPlayer().sendMessage("<red>The barricade is already at full health!");
-            return;
-        }
-
-        reBarricade.repair(1);
-        event.getPlayer().getInventory().getItemInMainHand().setAmount(event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1);
-        event.setCancelled(true); // Cancel the event to prevent further interaction
     }
 
 //    private void checkForNearbyBarricades(Interaction interaction) {
