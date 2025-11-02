@@ -2,6 +2,7 @@ package me.solar.infectionMinigame.mobs;
 
 import lombok.Getter;
 import me.solar.infectionMinigame.events.CustomMobSpawnEvent;
+import me.solar.infectionMinigame.mobs.goals.AttackPlayerGoal;
 import me.solar.infectionMinigame.mobs.goals.GetNearestBarricadeTarget;
 import me.solar.infectionMinigame.mobs.goals.GetNearestPlayerTarget;
 import me.solar.infectionMinigame.mobs.goals.MoveTowardsPlayerGoal;
@@ -14,6 +15,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +26,9 @@ public abstract class CustomMob extends Zombie {
 
     @Getter
     private static Map<String, CustomMob> mobs = new HashMap<>();
+
+    @Getter
+    protected double attackDamage;
 
     protected CustomMob(Level level) {
         super(level);
@@ -38,15 +45,28 @@ public abstract class CustomMob extends Zombie {
         mobs.put(String.valueOf(getName()), this);
         CraftWorld craftWorld = (CraftWorld) location.getWorld();
         craftWorld.getHandle().addFreshEntity(this, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM);
+        setupMob();
 
         new CustomMobSpawnEvent(this).callEvent();
     }
 
+    protected void setupMob() {
+
+    }
+
+    protected abstract void setupNonModelMob();
+
+    protected void setEquipment(EquipmentSlot slot, ItemStack item) {
+        LivingEntity bukkitEntity = getBukkitLivingEntity();
+        bukkitEntity.getEquipment().setItem(slot, item);
+    }
+
     @Override
     public void registerGoals() {
-        super.goalSelector.addGoal(1, new MoveTowardsPlayerGoal(this));
-        super.goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 128.0F));
-        super.goalSelector.addGoal(3, new GetNearestBarricadeTarget(this));
+        super.goalSelector.addGoal(1, new AttackPlayerGoal(this));
+        super.goalSelector.addGoal(2, new MoveTowardsPlayerGoal(this));
+        super.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 128.0F));
+        super.goalSelector.addGoal(4, new GetNearestBarricadeTarget(this));
         this.addBehaviourGoals();
     }
 
@@ -60,4 +80,17 @@ public abstract class CustomMob extends Zombie {
     protected PathNavigation createNavigation(Level level) {
         return new InfectedNavigation(this, level);
     }
+
+    public void playAnimation(String animationName) {
+        playAnimation(animationName, false, false);
+    }
+
+    public void playAnimation(String animationName, boolean loop) {
+        playAnimation(animationName, false, loop);
+    }
+
+    public void playAnimation(String animationName, boolean blendAnimation, boolean loop) {
+
+    }
+
 }

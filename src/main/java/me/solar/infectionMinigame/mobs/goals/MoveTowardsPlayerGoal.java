@@ -19,12 +19,8 @@ public class MoveTowardsPlayerGoal extends Goal {
     public boolean canUse() {
         double maxDist = 512.0D;
         Player nearestPlayer = this.mob.level().getNearestPlayer(this.mob, maxDist);
-        Common.log( "Nearest player: " + nearestPlayer);
-        Common.log("Distance: " + this.mob.distanceToSqr(nearestPlayer));
         if (nearestPlayer != null) {
             Path path = mob.getNavigation().createPath(nearestPlayer, 0);
-            Common.log("Path: " + path);
-            Common.log("Can reach: " + path.canReach());
 //            if (path == null || !path.canReach()) {
 //                // If the path to the player is not reachable, we cannot use this target
 //                return false;
