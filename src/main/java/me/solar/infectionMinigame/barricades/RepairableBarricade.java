@@ -18,6 +18,7 @@ import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,14 +27,15 @@ public class RepairableBarricade extends Barricade {
     private final ItemStack repairItem;
     private int health = 5;
     private ItemDisplay itemDisplay;
-    private Interaction interactions;
+    private List<Interaction> interactions;
     private List<Location> locations;
     private Region region;
     private double yaw;
 
     public RepairableBarricade(Region region) {
         this.region = region;
-        this.repairItem =  setRepairItem(); 
+        this.repairItem =  setRepairItem();
+        this.interactions = new ArrayList<>();
     }
 
     @Override
@@ -41,6 +43,8 @@ public class RepairableBarricade extends Barricade {
         if (locations == null) {
             locations = region.getAllLocations();
         }
+
+        updateYawToLongestSide();
 
         Location loc = locations.get(0);
         spawnItemDisplay(loc);
@@ -56,8 +60,8 @@ public class RepairableBarricade extends Barricade {
     @Override
     public void destroy() {
         destroyDoor();
-        if (interactions != null) {
-            interactions.remove();
+        for (Interaction interaction : interactions) {
+            interaction.remove();
         }
     }
 
@@ -158,9 +162,6 @@ public class RepairableBarricade extends Barricade {
         float yawRadians = location.getYaw();
         float mapped = (yawRadians + 180) % 360;
         if (mapped < 0) mapped += 360;
-        Common.log("height: " + region.getHeight());
-        Common.log("width: " + region.getWidth());
-        Common.log("length: " + region.getLength());
 
         float finalMapped = mapped;
         itemDisplay = location.getWorld().spawn(region.getCenter().add(0.5, .65, 0.5), ItemDisplay.class, display -> {
@@ -182,15 +183,21 @@ public class RepairableBarricade extends Barricade {
     private void spawnInteraction(Location location) {
         Location interactionLocation = location.clone();
         interactionLocation.add(0.5, .05, 0.5);
-        float width = (float) (region.getWidth() + .1f);
-        location.getWorld().spawn(interactionLocation, Interaction.class, interactor -> {
+        interactions.add(location.getWorld().spawn(interactionLocation, Interaction.class, interactor -> {
             interactor.setCustomNameVisible(false);
             interactor.setInteractionWidth(1.1f);
             interactor.setInteractionHeight(1.1f);
             interactor.setGravity(false);
             interactor.setPersistent(true);
             interactor.setMetadata("barricade", new FixedMetadataValue(InfectionMinigamePlugin.getInstance(), this));
-        });
+        }));
+    }
+
+    private void updateYawToLongestSide() {
+        double width = region.getWidth();
+        double length = region.getLength();
+        // If width is longer, face east-west (yaw = 90), else north-south (yaw = 0)
+        this.yaw = width >= length ? 90.0 : 0.0;
     }
 
     private void setBarrierBlock(Location location) {
