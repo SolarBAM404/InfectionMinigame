@@ -20,12 +20,7 @@ public class PickupListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
-        player.sendMessage("You picked up an item!");
-
         Item eventItem = event.getItem();
-        ItemStack item = eventItem.getItemStack();
-
-        Common.log("Item: " + item.getType().name());
 
         eventItem.remove();
         PickupItem pickupItem = PickupItem.get(eventItem.getUniqueId());
