@@ -23,11 +23,8 @@ repositories {
         name = "sonatype"
     }
     maven {
-        url = uri("https://maven.pkg.github.com/SolarBAM404/ApolloLibrary")
-        credentials {
-            username = GITHUB_USER
-            password = GITHUB_TOKEN
-        }
+        name = "magmaguyRepoReleases"
+        url = uri("https://repo.magmaguy.com/releases")
     }
 }
 
@@ -35,7 +32,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.9-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("me.solarbam:ApolloLibrary:0.3.3")
-    compileOnly("io.github.toxicity188:BetterModel:1.6.1")
+    compileOnly("com.magmaguy:FreeMinecraftModels:2.3.12")
     paperweight.paperDevBundle("1.21.9-R0.1-SNAPSHOT")
 
     // Lombok
